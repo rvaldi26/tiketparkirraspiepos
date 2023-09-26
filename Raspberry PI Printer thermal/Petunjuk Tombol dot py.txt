@@ -1,0 +1,10 @@
+tombol.py berisi sebuah perintah untuk mencetak sebuah resi dari raspberry pi
+Jika tombol yang dihubungkan ke gpio16 lalu ditekan maka proses eksekusi print akan dilakukan
+program ini dapat digunakan untuk sistem palang parkir
+
+fungsi :
+GPIO16 -> TOMBOL 
+GPIO20 -> RELAY
+
+Jika tombol ditekan maka state relay akan berubah, dan printer juga akan mencetak yang ada
+pada program main.py

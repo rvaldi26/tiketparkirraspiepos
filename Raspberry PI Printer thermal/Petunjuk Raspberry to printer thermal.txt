@@ -1,0 +1,52 @@
+Cara Menyambungkan Printer thermal dan mengendalikan nya dengan raspberry pi 
+Buat Rules pada usb untuk printer "lihat contoh pada lampiran file"
+Dengan Nama file : 99-escpos.rules Simpan File ini kedalam etc/udev/rules.d
+
+Install Lib yg di butuhkan 
+pip install python-escpos
+
+check product id dan vendor id
+#lsusb
+"Bus 002 Device 001: ID 1a2b:1a2c Device name (cth: ST Micro Electronic)" Contoh
+1a2b merupakan product ID agan
+1a2c merupakan vendor ID agan
+
+lalu ketikan printah ini
+# lsusb -vvv -d xxxx:xxxx | grep iInterface
+    iInterface              0
+# lsusb -vvv -d xxxx:xxxx | grep bEndpointAddress | grep OUT
+      bEndpointAddress     0x01  EP 1 OUT
+
+kita perlu ngebuat sebuah file, letak + namanya kaya gini.
+/etc/udev/rules.d/99-escpos.rules
+
+SUBSYSTEM=="usb", ATTRS{idVendor}=="1a2b", 
+ATTRS{idProduct}=="1a2c", MODE="0664", GROUP="dialout"
+
+Reboot rules nya
+sudo service udev restart
+
+instal lib ini opsional 
+sudo apt-get install python3 python3-setuptools python3-pip libjpeg8-dev
+
+buat file baru main.py
+
+isi nya 
+from escpos import *
+
+def run():
+    p = printer.Usb(0x{product_id},0x{vendor_id} , timeout=0, in_ep=0x81, out_ep={ep_out})
+    # Print text
+    p.set(align='CENTER')
+    p.text("\nHELLO WORLD\n")
+    p.text("-------------------------------\n")
+    p.qr('QR Code', size=6, native=True)
+    # Print image
+    #p.image("logo.gif") 
+    # Cut paper
+    p.cut()
+    #p.close()
+
+run()
+
+Selamat mencoba 
